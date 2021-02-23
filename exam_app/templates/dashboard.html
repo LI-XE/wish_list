@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <title>Dashboard</title>
+</head>
+<body>
+    <nav class="nav row d-md-flex justify-content-md-end m-3">
+        <a href="/logout">Logout</a>
+    </nav>
+    <div class="container">
+        <h1 class="my-3">Hello {{ request.session.name }}</h1>
+        <h2>Your Wish List</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Added by</th>
+                    <th>Date Added</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                    {% if user in product.users.all %}
+                    <tr>
+                        <td><a href="/wish_items/{{product.id}}">{{ product.item }}</a></td>
+                        <td>{{ product.creator.name }}</td>
+                        <td>{{ product.created_at | date:'M d Y' }}</td>
+                        <td> 
+                            {% if product.creator.id == request.session.user_id %}
+                            <a href="/dashboard/{{product.id}}/delete">Delete</a>
+                            {% elif product.creator.id != request.session.user_id %}
+                            <a href="/dashboard/{{product.id}}/remove">Remove from my Wishlist</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+        <h2 class="mt-5">Other User's Wish List</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Added by</th>
+                    <th>Date Added</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                    {% if user not in product.users.all %}
+                    <tr>
+                        <td><a href="/wish_items/{{product.id}}">{{ product.item }}</a></td>
+                        <td>{{ product.creator.name }}</td>
+                        <td>{{ product.created_at | date:'M d Y' }}</td>
+                        <td><a href="/dashboard/{{product.id}}/add">Add to my Wishlist</a></td>
+                    </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="/additem" class=" float-right m-3">Add Item</a>
+    </div>
+</body>
+</html>

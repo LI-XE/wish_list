@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Trip</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+</head>
+<body>
+    <nav class="nav row d-md-flex justify-content-md-end m-3">
+        <a href="/dashboard" class="mx-3">Home</a>
+        <a href="/logout">Logout</a>
+    </nav>
+    <div class="container">
+        <h1>Create a New Wish List Item</h1>
+        {% if messages %}
+        <ul class="text-danger">
+            {% for message in messages %}
+            <li {% if message.tag %} class="{{message.tag}}" {% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        <form action="/additem" method="POST">
+            {% csrf_token %}
+            <div class="form-group my-4">
+                <label for="item" class="my-4">Item/Product</label>
+                <input type="text" name="item" id="item" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-outline-success float-right m-3">Add</button>
+        </form>
+    </div>
+</body>
